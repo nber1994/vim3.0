@@ -1,0 +1,15 @@
+The macros in the maze, hanoi and urm directories can be used to test Vim for
+vi compatibility. They have been written for vi to show its unlimited
+possibilities.
+
+HANOI are macros that solve the tower of hanoi problem.
+MAZE  are macros that solve a maze (amazing!).
+URM   are macros that simulate a simple computer: "Universal Register Machine"
+
+They are unmodified.
+
+
+The other files contain some handy utilities:
+
+center: macros to center current line in 80-character line
+keyword: keyword completion macros

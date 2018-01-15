@@ -1,0 +1,14 @@
+" Some handy keyword-completion macros.
+" The word in front of the cursor is taken as a search string, the previous
+" partially matching word is found which then replaces the word in front
+" of the cursor. The macros work in insert mode.
+"
+" ^K searches backward for the first match
+" ^N searches backward for the next match (after ^K)
+" ^P searches forward for the previous match (after ^K)
+"
+" Thanks to Dave Caughey.
+"
+:map!  bmmi?\<`m"nyf@nmn"nyw`mcfn
+:map!  .`nnmn"nyw`mcf.n
+:map!  .`nNmn"nyw`mcf.n

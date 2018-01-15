@@ -1,0 +1,264 @@
+
+
+
+VIM(1)                                                     VIM(1)
+
+
+NNAAMMEE
+       vim - Vi IMproved, a programmers text editor
+
+SSYYNNOOPPSSIISS
+       vviimm [options] [file ..]
+       vviimm [options] -t tag
+       vviimm [options] -e [errorfile]
+
+DDEESSCCRRIIPPTTIIOONN
+       VViimm  is a text editor that is upwards compatible to vi. It
+       can be used to edit any ASCII text. It is especially  use-
+       ful for editing programs.
+
+       There  are  a  lot  of  enhancements above vi: multi level
+       undo, multi windows and  buffers,  command  line  editing,
+       filename completion, on-line help, visual selection, etc..
+       Read difference.doc  for  a  summary  of  the  differences
+       between vi and Vim.
+
+       Most  often  VViimm is started to edit a single file with the
+       command
+
+            vim file
+
+       More generally VIM is started with:
+
+            vim [options] [filelist]
+
+       If the filelist is missing, the editor will start with  an
+       empty  buffer.  Otherwise exactly one out of the following
+       three may be used to  choose  one  or  more  files  to  be
+       edited.
+
+       file ..     A list of file names. The first one (alphabet-
+                   ically) will be the current file and read into
+                   the  buffer.  The cursor will be positioned on
+                   the first line of the buffer. You can  get  to
+                   the other files with the ":next" command.
+
+       -t {tag}    The  file to edit and the initial cursor posi-
+                   tion depends on a "tag", a sort of goto label.
+                   {tag} is looked up in the tags file, the asso-
+                   ciated file becomes the current file  and  the
+                   associated command is executed. Mostly this is
+                   used for C programs. {tag} then  should  be  a
+                   function  name.  The  effect  is that the file
+                   containing that function becomes  the  current
+                   file and the cursor is positioned on the start
+                   of the function  (see  reference.doc,  section
+                   "tag searches").
+
+       -e [errorfile]
+                   Start  in  quickFix mode. The file [errorfile]
+                   is read and the first error is  displayed.  If
+
+
+
+                          1994 August 12                        1
+
+
+
+
+
+VIM(1)                                                     VIM(1)
+
+
+                   [errorfile]   is  omitted  the  file  name  is
+                   obtained from the 'errorfile' option (defaults
+                   to  "AztecC.Err"  for  the  Amiga, "errors" on
+                   other systems). Further errors can  be  jumped
+                   to  with  the ":cn" command. See reference.doc
+                   section 5.5.
+
+OOPPTTIIOONNSS
+       The options, if present, must precede  the  filelist.  The
+       options may be given in any order.
+
+       -r          Recovery  mode.  The  swap  file  is  used  to
+                   recover a crashed editing  session.  The  swap
+                   file  is a file with the same file name as the
+                   text file with  ".swp"  appended.  See  refer-
+                   ence.doc, chapter "Recovery after a crash".
+
+       -v          View  mode. The 'readonly' option will be set.
+                   You can still edit the  buffer,  but  will  be
+                   prevented  from accidently overwriting a file.
+                   If you do want to overwrite  a  file,  add  an
+                   exclamation  mark  to  the  Ex  command, as in
+                   ":w!".  The -v  option  also  implies  the  -n
+                   option (see below).  The 'readonly' option can
+                   be reset with ":set noro" (see  reference.doc,
+                   options chapter).
+
+       -b          Binary.  A  few options will be set that makes
+                   it possible to edit  a  binary  or  executable
+                   file.
+
+       +[num]      For  the  first  file the cursor will be posi-
+                   tioned on line "num". If "num" is missing, the
+                   cursor will be positioned on the last line.
+
+       +/pat       For  the  first  file the cursor will be posi-
+                   tioned on the first occurrence of  "pat"  (see
+                   reference.doc,  section "pattern searches" for
+                   the available search patterns).
+
+       +{command}
+
+       -c {command}
+                   {command} will be  executed  after  the  first
+                   file  has  been read. {command} is interpreted
+                   as an Ex command. If  the  {command}  contains
+                   spaces  it  must  be enclosed in double quotes
+                   (this depends on  the  shell  that  is  used).
+                   Example: Vim "+set si" main.c
+
+       -x          (Amiga  only)  Vim  is not restarted to open a
+                   new window. This option should  be  used  when
+                   Vim  is  executed  by a program that will wait
+                   for the edit session to  finish  (e.g.  mail).
+
+
+
+                          1994 August 12                        2
+
+
+
+
+
+VIM(1)                                                     VIM(1)
+
+
+                   The ":sh" and ":!" commands will not work.
+
+       -o[N]       Open  N  windows.  When N is omitted, open one
+                   window for each file.
+
+       -n          No swap file will be used.  Recovery  after  a
+                   crash will be impossible. Handy if you want to
+                   edit a  file  on  a  very  slow  medium  (e.g.
+                   floppy).  Can  also  be done with ":set uc=0".
+                   Can be undone with ":set uc=200".
+
+       -s {scriptin}
+                   The script file {scriptin} is read. The  char-
+                   acters  in  the file are interpreted as if you
+                   had typed them. The same can be done with  the
+                   command  ":source!  {scriptin}". If the end of
+                   the file is reached before the  editor  exits,
+                   further characters are read from the keyboard.
+
+       -w {scriptout}
+                   All the characters that you type are  recorded
+                   in  the  file {scriptout}, until you exit VIM.
+                   This is useful if you want to create a  script
+                   file to be used with "vim -s" or ":source!".
+
+       -T terminal Tells  Vim  the  name  of the terminal you are
+                   using. Should  be  a  terminal  known  to  Vim
+                   (builtin) or defined in the termcap file.
+
+       -d device   Open  "device"  for use as a terminal. Only on
+                   the Amiga. Example: "-d con:20/30/600/150".
+
+SSEEEE AALLSSOO
+       Vim documentation:
+
+       reference.doc:
+                   A complete reference of Vim (long)
+
+       windows.doc:
+                   Explanation of the multi windows  and  buffers
+                   commands and options
+
+       index:      Overview  of  all  command  characters (useful
+                   when adding new mappings)
+
+       difference.doc:
+                   Overview of the differences between vi and Vim
+
+       unix.doc:   Unix-specific comments
+
+       vim.hlp:    File used by the on-line help (short)
+
+AAUUTTHHOORR
+       Most of VIM was made by Bram Moolenaar.
+
+
+
+                          1994 August 12                        3
+
+
+
+
+
+VIM(1)                                                     VIM(1)
+
+
+       VIM  is  based on Stevie, worked on by: Tim Thompson, Tony
+       Andrews and G.R. (Fred) Walter
+
+BBUUGGSS
+       Probably.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          1994 August 12                        4
+
+

@@ -1,0 +1,434 @@
+Editing with multiple windows and buffers.
+
+Explained here are commands have been added to use multiple windows and
+buffers. Additionally there are explanations for commands that work different
+when used in combination with more than one window.
+
+
+A window is a viewport onto a buffer. You can use multiple windows on one
+buffer. Or several windows on different buffers.
+
+A buffer is a file loaded into memory for editing. The original file remains
+unchanged until you write the buffer to the file.
+
+A buffer can be in one of three states:
+
+active:   The buffer is displayed in a window. If there is a file for this
+	  buffer it has been read into the buffer. The buffer may have been
+	  modified.
+hidden:   The buffer is not displayed. If there is a file for this buffer it
+          has been read into the buffer. The buffer may have been modified.
+inactive: The buffer is not displayed and does not contain anything. Options
+          for the buffer are remembered if the file was once loaded.
+
+In a table:
+
+state		displayed	loaded		:buffers
+		in window			 shows
+active		  yes		 yes		  ' '
+hidden		  no		 yes		  'h'
+inactive	  no		 no		  '-'
+
+
+Starting Vim
+-----------
+
+By default Vim starts with one window, just like vi.
+
+The "-o" command line argument can be used to open a window for each file in
+the argument list: "Vim -o file1 file2 file3" will open three windows.
+
+"-oN", where N is a decimal number, opens N windows. If there are more file
+names than windows, only N windows are opened, some files do not get a window.
+If there are more windows than file names, the last few windows will be
+editing empty buffers.
+
+If there are many file names the windows will become very small. You might
+want to set the 'winheight' option to create a workable situation.
+
+
+Opening a new window
+--------------------
+
+CTRL-W s
+CTRL-W S
+CTRL-W CTRL-S
+:[N]split
+		Split current window in two. The result is two viewports on
+		the same file. Make new window N high (default is to use half
+		the height of the current window). Reduces the current window
+		height to create room (and others, if the 'equalalways' option
+		is set).
+
+CTRL-W n
+CTRL-W CTRL_N
+:[N]new
+		Create a new window and start editing an empty file in it.
+		Make new window N high (default is to use half the existing
+		height). Reduces the current window height to create room (and
+		others, if the 'equalalways' option is set). 
+
+:[N]new [+command] fname
+:[N]split [+command] fname
+		Create a new window and start editing file fname in it. If
+		[+command] is given, execute the command when the file has
+		been loaded. Make new window N high (default is to use half
+		the existing height). Reduces the current window height to
+		create room (and others, if the 'equalalways' option is set).
+
+
+Closing a window
+----------------
+
+CTRL-W q
+CTRL-W CTRL-Q
+:quit		Quit current window, unless the buffer was changed and there
+		are no other windows for this buffer. When quitting the last
+		window, exit Vim.
+
+:quit!		Quit current window. If this was the last window for a buffer,
+		any changes to that buffer are lost. When quitting the last
+		window, exit Vim. 
+
+CTRL-W c
+:close		Quit current window, unless it is the last window on the
+		screen. The buffer becomes hidden (unless there is another
+		window editing it). (Note: CTRL-W CTRL-C does not work).
+
+CTRL-W o
+CTRL-W CTRL-O
+:only		Make the current window the only one on the screen. All other
+		windows are closed. All buffers in the other windows become
+		hidden.
+
+
+Moving the cursor to other windows
+----------------------------------
+
+CTRL-W <CURSOR_DOWN>
+CTRL-W CTRL-J
+CTRL-W j	move cursor to Nth window below current one.
+
+CTRL-W <CURSOR_UP>
+CTRL-W CTRL-K
+CTRL-W k	move cursor to Nth window above current one.
+
+CTRL-W w
+CTRL-W CTRL-W	Without count: move cursor to window below current one. If
+		there is no window below, go to upper window.
+		With count: go to Nth window.
+
+CTRL-W p
+CTRL-W CTRL-P	go to previous (last accessed) window.
+
+
+Moving windows around
+---------------------
+
+CTRL-W r
+CTRL-W CTRL-R	Rotate windows downwards. The first window becomes the second
+		one, the second one the third one, etc. The last window
+		becomes the first window. The cursor remains in the same
+		window.
+
+CTRL-W R	Rotate windows upwards. The second window becomes the first
+		one, the third one the second one, etc. The first window
+		becomes the last window. The cursor remains in the same
+		window.
+
+CTRL-W x
+CTRL-W CTRL-X	Without count: Exchange current window with next one. If there
+		is no next window, exchange with previous window. With count:
+		Exchange current window with Nth window (first window is 1).
+		The cursor is put in the other window.
+
+
+Window resizing
+---------------
+
+CTRL-W =	make all windows (almost) equal high.
+
+:resize -N
+CTRL-W -	decrease current window height by N
+
+:resize +N
+CTRL-W +	increase current window height by N
+
+:resize [N]
+CTRL-W CTRL-_
+CTRL-W _	set current window height to N (default: highest possible)
+
+z<nr><CR>	set current window height to nr
+
+The option 'winheight' ('wh') is used to set the minimal window height of the
+current window. This option is used each time another window becomes the
+current window. If the option is '0' it is disabled. Set 'winheight' to a very
+large value, e.g. '9999', to make the current window always fill all available
+space. Set it to a reasonable value, e.g. '10', to make editing in the current
+window comfortable.
+
+When the option 'equalalways' ('ea') is set all the windows are automatically
+made the same size after splitting or closing a window. If you don't set this
+option, splitting a window will reduce the size of the current window and
+leave the other windows the same. When closing a window the extra lines are
+given the the window above it.
+
+The option 'commandheight' ('ch') is used to set the height of the command
+line. If you are annoyed by the "hit return to continue" questions for long
+messages, set this option to 2 or 3.
+
+If there is only one window, resizing that window will also change the command
+line height. If there are several windows, resizing the current window will
+also change the height of the window below it (and sometimes the window above
+it).
+
+
+Exiting Vim with multiple windows or buffers
+--------------------------------------------
+
+:qall		Exit Vim, unless there are some buffers which have been
+		changed. (Use :bmod to go to the next modified buffer).
+
+:qall!		Exit Vim. Any changes to buffers are lost.
+
+:wqall
+:xall		Write all changed buffers and exit Vim. If there are buffers
+		without a file name, which are readonly or cannot be written
+		for another reason, Vim is not quit. 
+
+:wqall!
+:xall!		Write all changed buffers, also the ones that are readonly,
+		and exit Vim. If there are buffers without a file name or
+		cannot be written for another reason, Vim is not quit. 
+
+
+Writing with multiple buffers
+-----------------------------
+
+:wall		Write all changed buffers. Buffers without a file name or
+		which are readonly are not written.
+
+:wall!		Write all changed buffers, also the ones that are readonly.
+		Buffers without a file name are not written.
+
+
+Overview of argument and buffer list commands
+---------------------------------------------
+
+   args list		    buffer list		meaning
+1. :[N]argument [N]	11. :[N]buffer [N]	to arg/buf N
+2. :[N]next [file ..]	12. :[N]bnext [N]	to Nth next arg/buf
+3. :[N]Next [N]		13. :[N]bNext [N]	to Nth previous arg/buf
+4. :[N]previous	[N]	14. :[N]bprevious [N]	to Nth previous arg/buf
+5. :rewind		15. :brewind		to first arg/buf
+6. :last		16. :blast		to last arg/buf
+7. :all			17. :ball		edit all args/buffers
+			18. :unhide		edit all loaded buffers
+			19. :[N]bmod [N]	to Nth modified buf
+
+ split & args list 	 split & buffer list 	meaning                   
+21. :[N]sargument [N]   31. :[N]sbuffer [N]	split + to arg/buf N           
+22. :[N]snext [file ..] 32. :[N]sbnext [N]      split + to Nth next arg/buf    
+23. :[N]sNext [N]       33. :[N]sbNext [N]      split + to Nth previous arg/buf
+24. :[N]sprevious [N]   34. :[N]sbprevious [N]  split + to Nth previous arg/buf
+25. :srewind            35. :sbrewind           split + to first arg/buf       
+26. :slast              36. :sblast             split + to last arg/buf        
+27. :sall		37: :sball		edit all args/buffers
+			38. :sunhide		edit all loaded buffers
+                        39. :[N]sbmod [N]       split + to Nth modified buf    
+
+40.	:args			list of arguments
+41.	:buffers		list of buffers
+
+The meaning of [N] depends on the command:
+[N] is number of buffers to go forward/backward on ?2, ?3, ?4
+[N] is an argument number, defaulting to current argument, for 1, 21
+[N] is a buffer number, defaulting to current buffer, for 11, 31
+[N] is a count for 17, 39
+
+Note: ":next" is an exception, because it must accept a list of file names
+for compatibility with vi.
+
+
+The argument list and multiple windows
+--------------------------------------
+
+The current position in the argument list can be different for each window.
+Remember that when doing ":e file" the position in the argument list stays
+the same, but you are not editing the file at that position. Thus the
+message (file N of M) may be misleading (this is inherited from vi).
+
+All the entries in the argument list are added to the buffer list. Thus you
+can also get to them with the buffer list commands, like ":bnext".
+
+:all
+:sall		Rearrange the screen to open one window for each argument.
+		All other windows are closed (buffers become hidden).
+
+:[N]sargument[!] [N]
+		Short for ":split | argument [N]": split window and go to
+		Nth argument. But when there is no such argument, of the
+		current file cannot be abandoned, the window is not split.
+
+:[N]snext[!] [file ..]
+		Short for ":split | [N]next": split window and go to Nth
+		next argument. But when there is no next file, or the
+		current file cannot be abandoned, the window is not split.
+
+:[N]sprevious[!] [N]
+:[N]sNext[!] [N]
+		Short for ":split | Next": split window and go to Nth
+		previous argument. But when there is no previous file, or
+		the current file cannot be abandoned, the window is not
+		split.
+
+:srewind[!]	Short for ":split | rewind": split window and go to first
+		argument. But when the current file cannot be abandoned the
+		window is not split.
+
+:slast[!]	Short for ":split | last": split window and go to last
+		argument. But when the current file cannot be abandoned the
+		window is not split.
+
+
+Tag or file name under the cursor
+---------------------------------
+
+CTRL-W ]
+CTRL-W CTRL-]	split current window in two. Use identifier under cursor as a
+		tag and jump to it in the new upper window. Make new window N
+		high.
+
+CTRL-W f
+CTRL-W CTRL-F	split current window in two. Edit file name under cursor. Like
+		":split ]f", but window isn't split if the file does not exist.
+
+
+Using hidden buffers
+--------------------
+
+A hidden buffer is not displayed in a window, but is still loaded into memory.
+This makes it possible to jump from file to file, without the need to read or
+write the file every time, and having to keep the file in a window.
+
+If the option 'hidden' ('hid') is set, abandoned buffers are kept for all
+commands that start editing another file: ":edit", ":next", ":tag", etc. The
+commands that move through the buffer list make the current buffer hidden
+although the 'hidden' option is not set (see below).
+
+You can make a hidden buffer not hidden, by starting to edit it with any
+command. Or by deleting it with the ":bdelete" command.
+
+:files
+:buffers	Show all buffers. Example:
+
+			1 #h  "/test/text" line 1
+			2  -  "asdf" line 0
+			3 % + "version.c" line 1
+
+		Each buffer has a unique number. That number will not change,
+		so you can always go to a specific buffer with ":buffer N" or
+		"N CTRL-^", where N is the buffer number.
+
+ 		'-' indicates a buffer that is not loaded. 'h' indicates a
+		hidden buffer: It is loaded, but currently not displayed in a
+		window. '%' indicates the buffer in the current window. '#'
+		indicates the alternate buffer for ":e #" or CTRL-^. '+'
+		indicates a modified buffer.
+
+:[N]bdelete
+:bdelete [N]
+		Unload buffer [N] (default: current buffer) and delete it from
+		the buffer list. If the buffer was changed this fails. The
+		file remains unaffected. If buffer [N] is the current buffer,
+		the next buffer becomes the current buffer.
+
+:[N]bdelete!
+:bdelete! [N]
+		Unload buffer [N] (default: current buffer) and delete it from
+		the buffer list. If the buffer was changed the changes are
+		lost. The file remains unaffected. If buffer [N] is the
+		current buffer, the next buffer becomes the current buffer.
+
+:N,Mbdelete[!]	do :bdelete[!] for all buffers in the range N to M (inclusive).
+
+:bdelete[!] N1 N2 ..
+		do :bdelete[!] for buffer N1, N2, etc.
+
+:[N]bunload
+:bunload [N]
+		Unload buffer [N] (default: current buffer). The memory
+		allocated for this buffer will be freed. The buffer remains in
+		the buffer list. If the buffer was changed this fails. If
+		buffer [N] is the current buffer, the next buffer becomes the
+		current buffer.
+
+:[N]bunload!
+:bunload! [N]
+		Unload buffer [N] (default: current buffer). The memory
+		allocated for this buffer will be freed. The buffer remains in
+		the buffer list. If the buffer was changed the changes are
+		lost. If buffer [N] is the current buffer, the next buffer
+		becomes the current buffer.
+
+:N,Mbunload[!]	do :bunload[!] for all buffers in the range N to M (inclusive).
+
+:bunload[!] N1 N2 ..
+		do :bunload[!] for buffer N1, N2, etc.
+
+:[N]buffer [N]
+		Edit buffer [N] from the buffer list. If [N] is not given, the
+		current buffer remains being edited.
+
+:[N]bnext [N]	Go to [N]th next buffer in buffer list. [N] defaults to one.
+
+:[N]bNext [N]
+:[N]bprev [N]	Go to [N]th previous buffer in buffer list. [N] defaults to
+		one.
+
+:brewind	Go to first buffer in buffer list
+
+:blast		Go to last buffer in buffer list
+
+:[N]bmodified [N]
+		Go to [N]th next modified buffer in buffer list
+
+:[N]sbuffer [N]
+		split window and Edit buffer [N] from the buffer list. If [N]
+		is not given, the current buffer is edited.
+
+:[N]sbnext [N]	split window and go to [N]th next buffer in buffer list
+
+:[N]sbNext [N]
+:[N]sbprev [N]	split window and go to [N]th previous buffer in buffer list
+
+:sbrewind	split window and go to first buffer in buffer list
+
+:sblast		split window and go to last buffer in buffer list
+
+:[N]sbmodified [N]
+		split window and go to [N]th next modified buffer in buffer list
+
+:unhide
+:sunhide	Rearrange the screen to open one window for each loaded
+		buffer in the buffer list.
+
+:ball
+:sball		Rearrange the screen to open one window for each buffer in
+		the buffer list.
+
+
+Memory usage limits
+-------------------
+
+The option 'maxmem' ('mm') is used to set the maximal memory used for one
+buffer (in Kbyte). 'maxmemtot' is used to set the maximal memory used for all
+buffers (in Kbyte). The defaults depend on the system used. For the Amiga and
+MSDOS 'maxmemtot' is set depending on the amount of memory available. If you
+don't like Vim to swap to a file, set 'maxmem' and 'maxmemtot' to a very large
+value. The swap file will then only be used for recovery. If you don't want a
+swap file at all, set 'updatecount' to 0, or use the "-n" argument when
+starting Vim. Note that the 'maxmem' option is only used when a buffer is
+created. Changing this option does not affect buffers that have already been
+loaded. Thus you can set it to different values for different files.
+'maxmemtot' works always.

@@ -1,0 +1,312 @@
+index of vim commands for
+ 1. insert mode
+ 2. VI commands (normal mode)
+ 3. command line editing
+ 4. EX commands
+
+(for an overview of options see the end of reference.doc)
+
+1. INSERT MODE
+==============
+
+char		action
+-----------------------------------------------------------------------
+^@		insert previously inserted text and stop insert {vi: up to 128
+		chars}
+^A		insert previously inserted text {not in Vi}
+^B		toggle 'revins' option.
+^C		quit insert mode, without checking for abbreviation.
+^D		delete one shiftwidth of indent in the current line {vi: 
+		only after auto-indent}
+		when preceded with <0> or <^>, delete all indent, with <^>
+		restore it in the next line
+^E		insert the character which is below the cursor
+^H <BS>		delete character before the cursor {vi: does not cross lines,
+		does not delete autoindents}
+^J <LF>		begin new line
+^K {char1} {char2} enter digraph (only when compiled with it) {vi: no digraphs}
+^M <CR>		begin new line
+^N		find next match for keyword in front of the cursor
+^O		execute a single command and return to insert mode
+^P		find previous match for keyword in front of the cursor
+^R <0-9a-z"%:>	insert contents of register <0-9a-z"%:> {not in vi}
+^T		insert one shiftwidth of indent in current line {vi: only in 
+		autoindent}
+^U		delete all entered characters in the current line
+^V		insert next non-digit literally, insert three digit decimal 
+		number as a single byte.
+^W		delete word before the cursor
+^Y		insert the character which is above the cursor
+^[ <ESC>	end insert mode
+<DEL>		same as ^H <BS>
+<C_UP>		cursor one line up
+<C_DOWN>	cursor one line down
+<C_LEFT>	cursor one character left
+<C_RIGHT>	cursor one character right
+<SC_UP>		one screenfull backward
+<SC_DOWN>	one screenfull forward
+<SC_LEFT>	cursor one word left
+<SC_RIGHT>	cursor one word right
+{char1}<BS>{char2} enter digraph (only when compiled with it and 'digraph' 
+		option set) {vi: no digraphs}
+
+
+2. VI COMMANDS
+==============
+
+CHAR means non-blank char
+WORD means sequences of non-blank chars
+N is number entered before the command
+<move> is a cursor movement command
+Nmove is the text that is moved over with a cursor movement command
+SECTION is a section that possibly starts with '}' instead of '{'
+
+note: 1 = cursor movement command; 2 = can be undone/redone
+
+char		note	vim normal mode (vi: what the unix vi does)
+------------------------------------------------------------------------------
+^@			error
+^A		2	add N to number at/after cursor {vi: no ^A}
+^B		1	scroll N screens Backwards
+^C			interrupt current (search) command
+^D			scroll Down N lines (default: half a screen)
+^E			scroll N lines upwards (N lines Extra)
+^F		1	scroll N screens Forward
+^G			display current file name and position
+^H <BS>		1	cursor N chars to the left
+^I <TAB>	1	go to N newer entry in jump list
+^J <LF>		1	cursor N lines downward
+^K			error
+^L			redraw screen
+^M <CR>		1	cursor to the first CHAR N lines lower
+^N		1	cursor N lines downward
+^O		1	go to N older entry in jump list
+^P		1	cursor N lines upward
+^Q			error (used for xon/xoff)
+^R		2	redo changes which were undone with 'u' (vi: retype
+			the screen)
+^S			error (used for xon/xoff)
+^T			jump to N older Tag in tag list
+^U			scroll N lines Upwards (default: half a screen)
+^V			start blockwise Visual (vi: no Visual)
+^W			window commands, followed by another character (vi: not)
+^X		2	subtract N from number at/after cursor {vi: no ^X}
+^Y			scroll N lines downwards
+^Z			suspend program (or start new shell)
+^[ <ESC>		error
+^\			error
+^]			:ta to ident under cursor
+^^			edit Nth alternate file (equivalent to :e #N)
+^_			error
+
+<SPACE>		1	cursor N chars to the right
+!<move><filter>		filter Nmove text through the "filter" command
+!!<filter>		filter N lines through the "filter" command
+"<a-zA-Z0-9.>		use buffer <a-zA-Z0-9.> for next delete, yank or put
+			(upper case to append)(<.> only works for put)
+#		1	search backward for the Nth occurrence of the ident under
+			the cursor {not in vi}
+$		1	cursor to the end of line N from the cursor
+%		1	find the next (curly/square) bracket on this line and go
+			to its match. With count: go to N percentage in the file.
+&		2	repeat last :s
+'<a-zA-Z>	1	cursor to the first CHAR on the line with mark <a-zA-Z>
+'[		1	cursor to the first CHAR on the line of the start of 
+			last operated text or start of putted text
+']		1	cursor to the first CHAR on the line of the end of 
+			last operated text or end of putted text
+''		1	cursor to the first CHAR of the line where the cursor was
+			before the latest jump.
+(		1	cursor N sentences backward
+)		1	cursor N sentences forward
+*		1	search forward for the Nth occurrence of the ident under
+			the cursor {not in vi}
++		1	cursor to the first CHAR N lines lower
+,		1	repeat latest f, t, F or T in opposite direction N times
+-		1	cursor to the first CHAR N lines higher
+.		2	repeat last change with count replaced by N
+/<pattern>	1	search forward for the Nth occurrence of <pattern>
+0		1	cursor to the first char of the line
+1			prepend to command to give a count
+2			"
+3			"
+4			"
+5			"
+6			"
+7			"
+8			"
+9			"
+:			Ex command (see below)		
+;		1	repeat latest f, t, F or T N times
+<<move>		2	shift the Nmove lines one shiftwidth leftwards
+<<		2	shift N lines one shiftwidth leftwards
+=<move>		2	filter Nmove lines through "indent" (vi: when option
+			'lisp' is set autoindent Nmove lines)
+==		2	filter N lines through "indent"
+><move>		2	shift Nmove lines one shiftwidth rightwards
+>>		2	shift N lines one shiftwidth rightwards
+?<pattern>	1	search backward for the Nth previous occurrence of
+			<pattern>
+@<a-z>		2	execute the contents of named buffer <a-z> N times
+@@		2	repeat the previous @<a-z> N times
+A		2	append text at the end of the line N times
+B		1	cursor N WORDS backward
+<"x>C		2	change from the cursor position to the end of the line,
+			and N-1 more lines [into buffer x]; synonym for c$
+<"x>D		2	delete the characters under the cursor until the end of
+			the line and N-1 more lines [into buffer x]; synonym for d$
+E		1	cursor forward to the end of WORD N
+F<char>			cursor to the Nth occurrence of <char> to the left
+G		1	cursor to line N, default last line
+H		1	cursor to line N from top of screen
+I		2	insert text before the first CHAR on the line N times
+J		2	Join N lines; default is 2
+K			lookup Keyword under the cursor with 'keywordprg'
+L		1	cursor to line N from bottom of screen
+M		1	cursor to middle line of screen
+N		1	repeat the latest '/' or '?' N times in opposite
+			direction
+O		2	begin a new line above the cursor and insert text, repeat
+			N times (vi: blank N screen lines)
+<"x>P		2	put the text [from buffer x] before the cursor N times
+V			start Visual mode on lines (vi: go to Ex mode)
+R		2	enter replace mode: overtype existing characters, repeat the
+			entered text N-1 times
+<"x>S		2	delete N lines [into buffer x] and start insert; synonym
+			for ^cc or 0cc, depending on autoindent
+T<char>		1	cursor till after Nth occurrence of <char> to the left
+U		2	undo all latest changes on one line (vi: while not moved
+			off of it)
+			While in Visual mode: make uppercase
+Q<move>		2	Join N lines and re-format them
+W		1	cursor N WORDS forward
+<"x>X		2	delete N characters before the cursor [into buffer x]
+<"x>Y			yank N lines [into buffer x]; synonym for yy
+ZZ			store current file, if modified, and exit		
+[[		1	cursor N sections backward
+[]		1	cursor N SECTIONS backward
+[{		1	cursor N times back to unmatched '{' (vi: not)
+[(		1	cursor N times back to unmatched '(' (vi: not)
+[f			edit file name under the cursor
+[p		2	like "p", but adjust indent to current line
+\			error
+]]		1	cursor N sections forward
+][		1	cursor N SECTIONS forward
+]}		1	cursor N times forward to unmatched '}' (vi: not)
+])		1	cursor N times forward to unmatched ')' (vi: not)
+]f			edit file name under the cursor
+]p		2	like "P", but adjust indent to current line
+^		1	cursor to the first CHAR of the line
+_		1	cursor to the first CHAR N - 1 lines lower
+`<a-zA-Z>	1	cursor to the mark <a-zA-Z>
+`[		1	cursor to the start of last operated text or start of 
+			putted text
+`]		1	cursor to the end of last operated text or end of 
+			putted text
+``		1	cursor to the position before latest jump
+a		2	append text after the cursor N times
+b		1	cursor N words backward
+<"x>c<move>	2	delete Nmove text [into buffer x] and start insert
+<"x>cc		2	delete N lines [into buffer x] and start insert
+<"x>d<move>	2	delete Nmove text [into buffer x]
+<"x>dd		2	delete N lines [into buffer x]
+e		1	cursor forward to the end of word N
+f<char>		1	cursor to Nth occurrence of <char> to the right
+gs			goto sleep for N seconds (default 1) (vi: not)
+gf			edit file name under the cursor
+h		1	cursor N chars to the left
+i		2	insert text before the cursor N times
+j		1	cursor N lines downward
+k		1	cursor N lines upward
+l		1	cursor N chars to the right
+m<a-z>			set mark <a-z> at cursor position		
+n		1	repeat the latest '/' or '?' N times
+o		2	begin a new line below the cursor and insert text, repeat
+			N times (vi: blank N screen lines)
+			While Visual: cursor moves other end
+<"x>p		2	put the text [from buffer x] after the cursor N times
+v			start Visual mode with characters (vi: no Visual)
+r<char>		2	replace N chars by <char>
+<"x>s		2	(substitute) delete N characters [into buffer x] and
+			start insert
+t<char>		1	cursor till before Nth occurrence of <char> to the right
+u		2	undo changes (vi: only one level)
+			With Visual: make lowercase (vi: no Visual)
+q<a-zA-Z>		record typed characters into named buffer <a-zA-Z>
+			(upper case to append)
+q			stops recording (vi: no recording)
+w		1	cursor N words forward
+<"x>x		2	delete N characters under and after the cursor [into
+			buffer x]
+<"x>y<move>		yank Nmove text [into buffer x]
+<"x>yy			yank N lines [into buffer x]
+z<CR>			redraw, cursor line to top of window, first non-blank
+z.			redraw, cursor line to center of window, first non-blank
+z-			redraw, cursor line at bottom of window, first non-blank
+zb			redraw, cursor line at bottom of window
+zt			redraw, cursor line at top of window
+zz			redraw, cursor line at center of window
+{		1	cursor N paragraphs backward
+|		1	cursor to column N
+}		1	cursor N paragraphs forward
+~		2	option notildeop: switch case of N characters under
+			cursor and move the cursor N characters to the right
+			(vi: no count)
+~<move>			option tildeop: switch case of Nmove text (vi: no tildeop
+			option)
+<DEL>			when entering a number: remove the last digit
+<HELP>			show the file vim:vim.hlp page by page (vi: no help)
+<C_UP>		1	move cursor N lines upwards
+<C_DOWN>	1	move cursor N lines downwards
+<C_LEFT>	1	move cursor N chars to the left
+<C_RIGHT>	1	move cursor N chars to the right
+<SC_UP>		1	scroll N screens Backwards (same as ^B)
+<SC_DOWN>	1	scroll N screens Forwards (same as ^F)
+<SC_LEFT>	1	cursor N words backward (same as b)
+<SC_RIGHT>	1	cursor N words forward (same as w)
+
+
+3. command line editing
+=======================
+
+Get to the command line with the ':', '!', '/' or '?' commands.
+Normal characters are inserted at the current cursor position.
+(vi: can only alter last character in the line)
+
+^A		do filename completion on the pattern in front of the cursor
+		and insert all matches
+^B		cursor to begin of command line
+^D		list filenames that match the pattern in front of the cursor
+^E		cursor to end of command line
+^H		delete the character in front of the cursor
+^L		do filename completion on the pattern in front of the cursor
+		and insert the longest common part
+^N		after an <ESC> with multiple matches: go to next match
+		otherwise: same as <C_DOWN>
+^P		after an <ESC> with multiple matches: go to previous match
+		otherwise: same as <C_UP>
+^U		remove all characters
+^V		insert next non-digit literally, insert three digit decimal 
+		number as a single byte. {Vi: type the CTRL-V twice to get one}
+^W		delete the word in front of the cursor
+'wildchar' option (default <TAB>)
+		do filename completion on the pattern in front of the cursor
+<DEL>		delete the character under the cursor
+<C_UP>		recall previous command line from history
+<C_DOWN>	recall next command line from history
+<C_LEFT>	cursor left
+<C_RIGHT>	cursor right
+<SC_LEFT>	cursor one word left
+<SC_RIGHT>	cursor one word right
+<SC_UP>		recall previous command line that matches pattern in front of
+		the cursor
+<SC_DOWN>	recall next command line that matches pattern in front of the
+		cursor
+
+
+4. EX commands
+==============
+
+For an index of EX commands, type CTRL-D at the ex command prompt.
+Or look in "src/cmdtab.tab".
+

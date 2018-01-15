@@ -1,0 +1,19 @@
+This file contains the particularities for the UNIX version of Vim.
+
+The default help filename is "/usr/local/lib/vim.hlp"
+The files "$HOME/.vimrc" and "$HOME/.exrc" are used instead of "s:.vimrc" and 
+"s:.exrc". Additionally "/usr/local/etc/vimrc" is used first.
+
+Temporary files (for filtering) are put in "/tmp".
+
+With wildcard expansion you can use <~> (home directory) and <$> 
+(environment variable).
+
+Because terminal updating under UNIX is often slow (e.g. serial line 
+terminal, shell window in suntools), the 'showcommand' and 'ruler' options 
+are default off. If you have a fast terminal, try setting them.
+
+The file Vim132 is a shell script that can be used to put Vim in 132 column 
+mode on a vt100 and lookalikes.
+
+The *.info files are for the Amiga. You don't need them with unix.

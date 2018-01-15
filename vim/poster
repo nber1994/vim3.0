@@ -1,0 +1,34 @@
+Vim - Vi IMproved. A clone of the UNIX text editor Vi. Very useful for 
+editing programs and other plain ASCII text. Full Vi compatibility (except Q 
+command, you don't need it). Includes most Ex commands.
+
+Extra features above Vi: Multilevel undo, command line history, improved 
+command line editing, command typeahead display, command to display yank 
+buffers, possibility to edit binary files, line wrapping can be switched off,
+file name stack, can be adjusted to understand error messages from any
+compiler, shows current file name in window title, on-line help, etc. 
+
+Version 2.0, update to 1.27. Most important changes:
+- 'wrap' option to switch line wrapping on/off
+- filename completion is more like other programs and adjustable
+- automatic detection of CR/LF line separator
+- '-b' command line option to make editing binary files more easy
+- added abbreviation
+- :make command for quickly jumping to errors
+- MSDOS version uses bios calls for screen output, ansi.sys not needed
+- many small changes to make Vim more vi-compatible
+
+Portability: Runs on MSDOS, Amiga and several UNIX versions.
+
+Distribution:
+comp.binaries.ibm.pc:	vim_dos.zip:	MSDOS binary and documentation
+
+comp.binaries.amiga:	vim_bin.lha:	Amiga binary and documentation
+
+comp.sources.misc:	shell archive with sources and documentation
+
+The documentation is almost the same for all systems. For MSDOS CR-LF is used
+for line separator. For Amiga .info files are included. For the shell archive
+some files are uuencoded because of unprintable characters.
+
+Vim is charityware. Read uganda.txt for details.

@@ -1,0 +1,11 @@
+The Windows NT port of Vim has not been tested very much. Be prepared to run
+into some problems in the NT specific parts.
+
+Known problems:
+
+Display is not always correct. Type CTRL-L to fix this.
+
+CTRL-C in a child shell (created with ":sh" or CTRL-Z) kills Vim. Hopefully
+the recovery mechanism will get your file back, but don't rely on this.
+
+The Windows NT port was done by Roger Knobbe <RogerK@po.wonderware.com>.

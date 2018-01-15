@@ -1,0 +1,158 @@
+This file contains the particularities for the MSDOS version of Vim.
+
+Known problem: When using smartdrive with write-behind caching, it is
+possible that Vim will try to create a swap file on a read-only file system
+(e.g. write protected floppy). You will then be given the message
+	"A serious disk error has occurred .., Retry (r)? "
+There is nothing you can do but unprotecting the floppy or switch off the
+computer. Even CTRL-ALT-DEL will not get you out of this. This is really a
+problem of smartdrive, not Vim. Smartdrive works fine otherwise. If this
+bothers you don't use the write-behind caching.
+
+The default output method for the screen is to use bios calls. This will work
+right away on most systems. You do not need ansi.sys. You can use ":mode" to
+set the current screen mode. See reference.doc, section 20.3.
+
+You can set the color used in vim with five termcap options:
+
+	":set t_ti=^V^[\|xxm"		start of invert mode
+	":set t_tb=^V^[\|xxm"		start of bold mode
+	":set t_tp=^V^[\|xxm"		back to normal text
+
+	":set t_so=^V^[\|xxm"		start of standout mode
+	":set t_se=^V^[\|xxm"		back to normal text
+
+Which of the three modes is used for which action depends on the 'highlight'
+('hl') option. See reference.doc.
+
+^V is CTRL-V
+^[ is ESC
+xx must be replaced by a decimal code: The foreground color number and
+   background color number added together:
+
+COLOR		FOREGROUND	BACKGROUND
+black		    0		    0
+blue		    1		   16
+green		    2		   32
+cyan		    3		   48
+red		    4		   64
+magenta		    5		   80
+brown		    6		   96
+lighgray	    7		  112
+darkgray	    8
+lightblue	    9
+lightgreen	   10
+lighcyan	   11
+lightred	   12
+lighmagenta	   13
+yellow		   14
+white		   15
+blink			   128
+
+When you use 0, the color is reset to the one used when you started Vim. This
+is the default for t_tp. The default for t_ti is black on grey, 0 + 112 = 112.
+The default for t_tb is white on cyan, 15 + 48 = 63. The default for t_so is
+white on blue, 15 + 16 = 31. These colors where choosen, because the also look
+good when using an inverted display. But you can change them as you like.
+
+The termcap codes that are translated into bios calls are:
+	ESC |J		clear screen
+	ESC |K		clear to end of line
+	ESC |L		insert line
+	ESC |M		delete line
+	ESC |row;colH	position cursor
+	ESC |attrm	set character attribute
+
+If you set these with the ":set" command, don't forget to put a backslash
+before the '|', otherwise it will be recognized as the end of the command.
+
+If you want to use another output method (e.g. when using a terminal on a COM
+port), set the terminal name to "pcansi". You can change the termcap options
+when needed (see chapter 20 of reference.doc). Note that the normal IBM
+ansi.sys does not support all the codes of the builtin pcansi terminal. If
+you use ansi.sys you will need to delete the termcap entries t_il and t_dl
+with
+	":set t_il= t_dl=".
+Otherwise the screen will not be updated correctly. It is better to use
+nansi.sys, nnansi.sys or the like instead of ansi.sys.
+
+If you want to use Vim on a terminal connected to a COM: port, reset the
+'bioskey' option. Otherwise the commands will be read from the PC keyboard.
+CTRL-C and CTRL-P may not work correctly with 'bioskey' reset.
+
+If the "tx" (textmode) option is set (which is the default), Vim will accept a 
+single <LF> or a <CR><LF> pair for end-of-line. When writing a file Vim will 
+use <CR><LF>. Thus if you edit a file and write it, <LF> is replaced with 
+<CR><LF>. If the "tx" option is not set the single <LF> will be used for
+end-of-line. A <CR> will be shown as ^M. You can use Vim to replace <LF> by
+<CR><LF> by reading in any mode and writing in text mode. You can use Vim to
+replace <CR><LF> by <LF> by reading in text mode and writing in non-text
+mode. 'textmode' is set automatically when 'textauto' is on (which is the
+default), so you don't really have to worry about what you are doing.
+
+If you want to edit a script file or a binary file you should reset the
+'textmode' and 'textauto' options before loading the file. Script files
+contain single <LF> characters which would be replaced by <CR><LF>. You can
+do this by starting Vim with the "-b" (binary) option.
+
+The default help filename is "$VIM\vim.hlp". If the environment variable $VIM 
+is not defined or the file is not found, the DOS search path is used to 
+search for the file "vim.hlp". If you do not want to put "vim.hlp" in your 
+search path, use the command ":set helpfile=pathname" to tell Vim where the 
+help file is.
+
+The ":cd" command recognizes the drive specifier and changes the current
+drive. Use ":cd c:" to make drive C the active drive. Use ":cd d:\dos" to go
+to the directory "dos" in the root of drive D.
+
+The files "_vimrc" and "_exrc" are used instead of ".vimrc" and ".exrc".
+The files "$VIM\_vimrc" and "$VIM\_exrc" are used instead of "s:.vimrc" and 
+"s:.exrc". To use the file "c:\_vimrc" use the command "set vim=c:".
+
+Use CTRL-break instead of CTRL-C to interrupt searches. The CTRL-C is not
+detected until a key is read.
+
+Use CTRL-arrow-left and CTRL-arrow-right instead of SHIFT-arrow-left and 
+SHIFT-arrow-right. The arrow-up and arrow-down cannot be used with SHIFT or 
+CTRL.
+
+Temporary files (for filtering) are put in the current directory.
+
+The default for the sh (shell) option is "command". If COMSPEC is defined it
+is used instead. External commands are started with "command /c
+<command_name>". Typing CTRL-Z starts a new command shell. Return to Vim with
+"exit".
+
+MS-DOS allows for only one filename extention. Therefore, in the original 
+filename the '.' is replaced by a '_', the name is truncated to 8 characters 
+and the new extention ".vim" or ".bak" is appended. Two examples: "test.c" 
+becomes "test_c.bak", "ditiseen.tst" becomes "ditiseen.bak". The 'shortname' 
+option is not available.
+
+The MS-DOS binary was compiled with Borland-C++ version 3.1, using
+makefile.bcc. Other compilers should also work. Use makefile.dos for Turbo-C
+2.0. Use makefile.bcc for other Borland compilers, also Turbo-C++ 3.0 (with
+small changes). If you get all kinds of strange error messages when compiling,
+you have to add <CR> characters at the end of each line. This can be done with
+the addcr program: "make addcr". This will compile addcr.c to addcr.exe and
+execute the addcr.bat file. Sometimes this fails. Then execute the addcr.bat
+file from the DOS prompt.
+
+The "spawno" library by Ralf Brown was used in order to free memory when Vim
+starts a shell or other external command. Only about 200 bytes are taken from
+conventional memory. When recompiling get the spawno library from Simtel,
+directory "msdos/c". It is called something like "spwno413.zip". Or remove the
+library from the makefile.
+
+A swap file is used to store most of the text. You should be able to edit very
+large files. However, memory is used for undo and other things. If you delete
+a lot of text you can still run out of memory.
+
+If Vim gives an "Out of memory" warning you should stop editing. Result of
+further editing actions is unpredictable. Setting 'undolevels' to 0 saves some
+memory. Running the maze macros on a big maze is guaranteed to run out of
+memory, because each change is remembered for undo. In this case set
+'undolevels' to a negative number. This will switch off undo completely. In a
+future release extended memory will be used to avoid these problems.
+
+The *.info files are for the Amiga. You don't need them with MSDOS.

@@ -1,0 +1,4 @@
+Some tools that can be used with Vim:
+
+vim132: shell script to edit in 132 column mode on vt100 compatible terminals
+ref:	shell script for the K command
